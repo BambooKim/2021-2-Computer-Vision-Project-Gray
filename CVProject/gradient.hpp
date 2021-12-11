@@ -15,12 +15,12 @@
 using namespace std;
 using namespace cv;
 
-extern int** xConvolvMat;
-extern int** yConvolvMat;
+extern double** xConvolvMat;
+extern double** yConvolvMat;
+extern double** magnitudes;
 
-void showImage(String srcName, Mat img);
-void gradXFilter(Mat* mat, int width, int height);
-void gradYFilter(Mat* mat, int width, int height);
-void gradFilter(Mat* mat, int width, int height);
+void gradXFilter(Mat* mat);
+void gradYFilter(Mat* mat);
+Mat gradFilter(Mat* mat);
 
 #endif /* gradient_hpp */

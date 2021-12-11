@@ -7,21 +7,24 @@
 
 #include "gradient.hpp"
 
+//#define threshold
+#define none
+#define PRODUCT 2
+
 using namespace cv;
 using namespace std;
 
-int** xConvolvMat;
-int** yConvolvMat;
-
-void showImage(String srcName, Mat img) {
-    imshow(srcName, img);
-    waitKey();
-}
+double** xConvolvMat;
+double** yConvolvMat;
+double** magnitudes;
 
 // x방향의 gradient를 구하고 화면에 보여주는 함수.
-void gradXFilter(Mat* mat, int width, int height) {
+void gradXFilter(Mat* mat) {
     Mat src;
     (*mat).copyTo(src);
+    
+    int width = src.size().width;
+    int height = src.size().height;
     
     // x convolution filter
     // gradient
@@ -47,7 +50,7 @@ void gradXFilter(Mat* mat, int width, int height) {
         
             // Mat 구조체에 저장하면 음수는 자동으로 값이 양수로 변하므로
             // xConvolvMat에 x방향의 gradient 값을 저장한다.
-            xConvolvMat[x][y] = x_gra;
+            xConvolvMat[y][x] = x_gra;
             
             if (min > x_gra)
                 min = x_gra;
@@ -57,8 +60,7 @@ void gradXFilter(Mat* mat, int width, int height) {
     }
     
     // gradient의 최소와 최대값
-    // -237 234
-    cout << min << " " << max << endl;
+    // cout << min << " " << max << endl;
     
     for (int y = 1; y < height - 1; y++) {
         for (int x = 1; x < width - 1; x++) {
@@ -66,22 +68,29 @@ void gradXFilter(Mat* mat, int width, int height) {
             // 시각화를 위해 음수를 양수로 만들어주기 위해
             // 그만큼 더해준 뒤 폭의 scaling을 위해
             // 절반으로 나눠준다.
-            int x_gra = (xConvolvMat[x][y] + 238) / 2;
+            int absMin = min < 0 ? -min : min;
+
+#ifdef dog
+            int x_gra = (xConvolvMat[y][x] + absMin) / ((max + absMin) / 255.0);
+#endif
+#ifdef none
+            int x_gra = (xConvolvMat[y][x] + absMin) * PRODUCT;
+#endif
             int in = x_gra;
         
             // Mat 구조체에 보정된 gradient 값을 저장한다.
             src.at<uchar>(x, y) = in;
         }
     }
-    
-    // 필터링 된 이미지를 화면에 보여준다.
-    showImage("xgrad", src);
 }
 
 // y 방향의 gradient를 구하고 화면에 보여주는 함수.
-void gradYFilter(Mat* mat, int width, int height) {
+void gradYFilter(Mat* mat) {
     Mat src;
     (*mat).copyTo(src);
+    
+    int width = src.size().width;
+    int height = src.size().height;
     
     // y 방향의 linear derivative filter
     int y_kernel[3] = { 1, 0, -1 };
@@ -106,7 +115,7 @@ void gradYFilter(Mat* mat, int width, int height) {
         
             // 역시 mat 구조체에 저장할 경우 음수가 양수가 되기 때문에
             // yConvolvMat 2차원 배열에 gradient 값을 저장한다.
-            yConvolvMat[x][y] = y_gra;
+            yConvolvMat[y][x] = y_gra;
             
             if (min > y_gra)
                 min = y_gra;
@@ -115,44 +124,56 @@ void gradYFilter(Mat* mat, int width, int height) {
         }
     }
     
-    // -231, 244
-    cout << min << " " << max << endl;
+    //cout << min << " " << max << endl;
     
     for (int y = 1; y < height - 1; y++) {
         for (int x = 1; x < width - 1; x++) {
             
             // 역시 음수를 양수로 만들고 2로 나눠
             // gradient 값을 보정한다.
-            int y_gra = (yConvolvMat[x][y] + 232) / 2;
+            int absMin = min < 0 ? -min : min;
+
+#ifdef dog
+            int y_gra = (yConvolvMat[y][x] + absMin) / ((max + absMin) / 255.0);
+#endif
+#ifdef none
+            int y_gra = (yConvolvMat[y][x] + absMin) * PRODUCT;
+#endif
             int in = y_gra;
-            
+
             src.at<uchar>(x, y) = in;
         }
     }
-    
-    // y 방향의 gradient를 화면에 보여준다.
-    showImage("ygrad", src);
 }
 
 // x방향과 y방향의 gradient를 가지고 magnitude를 구한다.
-void gradFilter(Mat* mat, int width, int height) {
-    gradXFilter(mat, width, height);
-    gradYFilter(mat, width, height);
+Mat gradFilter(Mat* mat) {
+    gradXFilter(mat);
+    gradYFilter(mat);
     // 위 두 함수가 수행되면 전역 변수에 gradient가 저장된다.
     
     Mat src = (*mat).clone();
+    int width = src.size().width;
+    int height = src.size().height;
     
     for (int x = 1; x < width - 1; x++) {
         for (int y = 1; y < height - 1; y++) {
             // x와 y의 gradient를 이용해 magnitude를 구한다.
-            float magnitude = sqrt(xConvolvMat[x][y] * xConvolvMat[x][y] + yConvolvMat[x][y] * yConvolvMat[x][y]);
+            double magnitude = sqrt(xConvolvMat[y][x] * xConvolvMat[y][x] + yConvolvMat[y][x] * yConvolvMat[y][x]);
+#ifdef dog
+            src.at<uchar>(x, y) = magnitude * PRODUCT;
+#endif
+#ifdef none
             src.at<uchar>(x, y) = magnitude;
+#endif
+#ifdef threshold
+            src.at<uchar>(x, y) = magnitude > 60 ? 255 : 0;
+#endif
             
-            cout << magnitude << " ";
+            // 전역 변수 2차원 배열 magnitudes에 magnitude값을 저장한다.
+            magnitudes[y][x] = magnitude;
         }
-        cout << endl;
     }
     
-    // 최종적인 derivative filter를 적용한 이미지를 화면에 출력한다.
-    showImage("grad", src);
+    return src;
 }
