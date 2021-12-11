@@ -44,7 +44,7 @@ int main(int argc, const char * argv[]) {
     // 이미지 파일을 회색으로 읽어들인다. 해당 정보는 OpenCV의 Mat 구조체에 저장된다.
     string fileName;
     //cin >> fileName;
-    fileName = "IMG_5624.jpeg";
+    fileName = "IMG_5473.jpeg";
     String filePath = "/Users/bambookim/Desktop/CVProject/CVProject/" + fileName;
     Mat src = imread(filePath, IMREAD_GRAYSCALE);
 
@@ -61,7 +61,7 @@ int main(int argc, const char * argv[]) {
     
     Mat CannyImg = src.clone();
     
-    CannyImg = gaussianFilter(&CannyImg, 15, 1);
+    CannyImg = gaussianFilter(&CannyImg, 15, 2);
     imshow("Gaussian", CannyImg);
     waitKey();
     

@@ -8,10 +8,12 @@
 #include "canny.hpp"
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <stack>
+#include <utility>
 
-#define threshold_high 15
+#define threshold_high 20
 #define threshold_mid 7
-#define threshold_low 2
+#define threshold_low 2.5
 
 using namespace std;
 using namespace cv;
@@ -27,32 +29,57 @@ Mat cannyEdgeDouble(Mat* mat) {
     canny = nonMaxSuppress(&canny);
     Mat thin = canny.clone();
     
+    stack<pair<int, int>> Stack;
+    
     int width = canny.size().width;
     int height = canny.size().height;
     
     int dx[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
     int dy[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
     
+    bool** check = new bool*[height];
+    for (int i = 0; i < height; i++) {
+        check[i] = new bool[width];
+    }
+    
     for (int y = 1; y < height - 1; y++) {
         for (int x = 1; x < width - 1; x++) {
             if (thin.at<uchar>(x, y) >= threshold_high) {
                 canny.at<uchar>(x, y) = 255;
-            } else if (threshold_low <= magnitudes[y][x] && magnitudes[y][x] <= threshold_high) {
-                for (int i = 0; i < 8; i++) {
-                    double _mag = thin.at<uchar>(x + dx[i], y + dy[i]);
-                    
-                    if (_mag >= threshold_high) {
-                        canny.at<uchar>(x, y) = 255;
-                        
-                        break;
-                    }
-                }
-                canny.at<uchar>(x, y) = 0;
+                check[y][x] = true;
+                Stack.push(make_pair(x, y));
             } else {
                 canny.at<uchar>(x, y) = 0;
             }
         }
     }
+    
+    while (!Stack.empty()) {
+        int x = Stack.top().first;
+        int y = Stack.top().second;
+        Stack.pop();
+        check[y][x] = true;
+        for (int i = 0; i < 8; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if (0 <= nx && nx < width && 0 <= ny && ny < height) {
+                if (!check[ny][nx]) {
+                    double nMag = magnitudes[ny][nx];
+                    if (threshold_low <= nMag && nMag <= threshold_high) {
+                        //check[ny][nx] = true;
+                        Stack.push(make_pair(nx, ny));
+                        canny.at<uchar>(nx, ny) = 255;
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    for (int i = 0; i < height; i++) {
+        delete[] check[i];
+    }
+    delete[] check;
     
     return canny;
 }
@@ -62,12 +89,17 @@ Mat cannyEdgeTriple(Mat* mat) {
     canny = nonMaxSuppress(&canny);
     Mat thin = canny.clone();
 
+    stack<pair<int, int>> Stack;
+    stack<pair<int, int>> _Stack;
+    
     int width = canny.size().width;
     int height = canny.size().height;
     
     bool** check = new bool*[height];
+    bool** _check = new bool*[height];
     for (int i = 0; i < height; i++) {
         check[i] = new bool[width];
+        _check[i] = new bool[width];
     }
     
     int dx[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
@@ -77,44 +109,68 @@ Mat cannyEdgeTriple(Mat* mat) {
         for (int x = 1; x < width - 1; x++) {
             if (thin.at<uchar>(x, y) >= threshold_high) {
                 canny.at<uchar>(x, y) = 255;
-            } else if (threshold_mid <= magnitudes[y][x] && magnitudes[y][x] <= threshold_high) {
-                for (int i = 0; i < 8; i++) {
-                    double _mag = thin.at<uchar>(x + dx[i], y + dy[i]);
-                    
-                    if (_mag >= threshold_high) {
-                        canny.at<uchar>(x, y) = 255;
-                        check[y][x] = true;
-                        
-                        break;
-                    }
-                }
-                canny.at<uchar>(x, y) = 0;
+                check[y][x] = true;
+                _check[y][x] = true;
+                Stack.push(make_pair(x, y));
             } else {
                 canny.at<uchar>(x, y) = 0;
             }
         }
     }
-    //threshold_low <= magnitudes[y][x] && magnitudes[y][x] <= threshold_mid
-    for (int y = 1; y < height - 1; y++) {
-        for (int x = 1; x < width - 1; x++) {
-            double temp = magnitudes[y][x];
-            if (threshold_low <= temp && temp <= threshold_mid) {
-                for (int i = 0; i < 8; i++) {
-                    if (check[y + dy[i]][x + dx[i]]) {
-                        canny.at<uchar>(x, y) = 255;
-                        
-                        break;
+    
+    while (!Stack.empty()) {
+        int x = Stack.top().first;
+        int y = Stack.top().second;
+        Stack.pop();
+        check[y][x] = true;
+        _check[y][x] = true;
+        
+        for (int i = 0; i < 8; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if (0 <= nx && nx < width && 0 <= ny && ny < height) {
+                if (!check[ny][nx]) {
+                    double nMag = magnitudes[ny][nx];
+                    if (threshold_mid <= nMag && nMag <= threshold_high) {
+                        //check[ny][nx] = true;
+                        //_check[ny][nx] = true;
+                        Stack.push(make_pair(nx, ny));
+                        _Stack.push(make_pair(nx, ny));
+                        canny.at<uchar>(nx, ny) = 255;
                     }
                 }
-                canny.at<uchar>(x, y) = 0;
+            }
+        }
+    }
+    
+    while (!_Stack.empty()) {
+        int x = _Stack.top().first;
+        int y = _Stack.top().second;
+        _Stack.pop();
+        _check[y][x] = true;
+        
+        for (int i = 0; i < 8; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if (0 <= nx && nx < width && 0 <= ny && ny < height) {
+                if (!_check[ny][nx]) {
+                    double nMag = magnitudes[ny][nx];
+                    if (threshold_low <= nMag && nMag <= threshold_mid) {
+                        // _check[ny][nx] = true;
+                        _Stack.push(make_pair(nx, ny));
+                        canny.at<uchar>(nx, ny) = 255;
+                    }
+                }
             }
         }
     }
     
     for (int i = 0; i < height; i++) {
         delete[] check[i];
+        delete[] _check[i];
     }
     delete[] check;
+    delete[] _check;
     
     return canny;
 }
