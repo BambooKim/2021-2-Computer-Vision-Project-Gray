@@ -18,7 +18,7 @@ double** xConvolvMat;
 double** yConvolvMat;
 double** magnitudes;
 
-// x방향의 gradient를 구하고 화면에 보여주는 함수.
+// x방향의 gradient를 구하는 함수.
 void gradXFilter(Mat* mat) {
     Mat src;
     (*mat).copyTo(src);
@@ -59,9 +59,6 @@ void gradXFilter(Mat* mat) {
         }
     }
     
-    // gradient의 최소와 최대값
-    // cout << min << " " << max << endl;
-    
     for (int y = 1; y < height - 1; y++) {
         for (int x = 1; x < width - 1; x++) {
             
@@ -70,9 +67,6 @@ void gradXFilter(Mat* mat) {
             // 절반으로 나눠준다.
             int absMin = min < 0 ? -min : min;
 
-#ifdef dog
-            int x_gra = (xConvolvMat[y][x] + absMin) / ((max + absMin) / 255.0);
-#endif
 #ifdef none
             int x_gra = (xConvolvMat[y][x] + absMin) * PRODUCT;
 #endif
@@ -124,8 +118,6 @@ void gradYFilter(Mat* mat) {
         }
     }
     
-    //cout << min << " " << max << endl;
-    
     for (int y = 1; y < height - 1; y++) {
         for (int x = 1; x < width - 1; x++) {
             
@@ -133,9 +125,6 @@ void gradYFilter(Mat* mat) {
             // gradient 값을 보정한다.
             int absMin = min < 0 ? -min : min;
 
-#ifdef dog
-            int y_gra = (yConvolvMat[y][x] + absMin) / ((max + absMin) / 255.0);
-#endif
 #ifdef none
             int y_gra = (yConvolvMat[y][x] + absMin) * PRODUCT;
 #endif

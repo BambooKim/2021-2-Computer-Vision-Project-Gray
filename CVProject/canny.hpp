@@ -18,8 +18,8 @@ extern double** xConvolvMat;
 extern double** yConvolvMat;
 extern double** magnitudes;
 
-Mat cannyEdgeDouble(Mat* mat);
-Mat cannyEdgeTriple(Mat* mat);
+Mat cannyEdgeDouble(Mat* mat, double threshold_high, double threshold_low);
+Mat cannyEdgeTriple(Mat* mat, double threshold_high, double threshold_mid, double threshold_low);
 Mat nonMaxSuppress(Mat* mat);
 
 #endif /* canny_hpp */
