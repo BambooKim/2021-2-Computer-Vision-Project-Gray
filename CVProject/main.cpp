@@ -43,8 +43,7 @@ void deleteGlobalArray(int height) {
 int main(int argc, const char * argv[]) {
     // 이미지 파일을 회색으로 읽어들인다. 해당 정보는 OpenCV의 Mat 구조체에 저장된다.
     string fileName;
-    //cin >> fileName;
-    fileName = "IMG_5624.jpeg";
+    fileName = "SgQKf.jpg";
     String filePath = "/Users/bambookim/Desktop/CVProject/CVProject/" + fileName;
     Mat src = imread(filePath, IMREAD_GRAYSCALE);
 
@@ -62,106 +61,29 @@ int main(int argc, const char * argv[]) {
     
     int kernelSize = 15;
     int sigma = 3;
-    int high = 10;
-    int mid = 7;
-    int low = 5;
-    
-    //src = gradFilter(&src);
-    //src = gaussianFilter(&src, 15, 5);
-    //src = gradFilter(&src);
-    
-    
-    
-    imshow("Source", src);
-    waitKey();
+    int high = 8;
+    int mid = 5;
+    int low = 3;
     
     Mat CannyImg = src.clone();
     
     CannyImg = gaussianFilter(&CannyImg, kernelSize, sigma);
-    //imshow("Gaussian", CannyImg);
-    //waitKey();
     
     CannyImg = gradFilter(&CannyImg);
-    //imshow("Gaussian-Derivative", CannyImg);
-    //waitKey();
     
-    Mat CannyDouble, CannyTriple;
+    Mat CannyTriple;
 
-    CannyDouble = CannyImg.clone();
-    CannyDouble = cannyEdgeDouble(&CannyDouble, high, low);
-    imshow("Canny Edge Double", CannyDouble);
-    waitKey();
-    
-    imwrite("/Users/bambookim/Desktop/CVProject2/CVProject/result/report/jongseong_canny_gray.jpg", CannyDouble);
-    /*
     CannyTriple = CannyImg.clone();
     CannyTriple = cannyEdgeTriple(&CannyTriple, high, mid, low);
     imshow("Canny Edge Triple", CannyTriple);
     waitKey();
     
-    cout << "sigma: " << sigma << endl;
-    cout << " high: " << high << endl;
-    cout << "  mid: " << mid << endl;
-    cout << "  low: " << low << endl;
-    
-    String doubleName = "s" + to_string(sigma) + "_h" + to_string(high) + "_l" + to_string(low) + ".jpeg";
-    String tripleName = "s" + to_string(sigma) + "_h" + to_string(high) + "_m" + to_string(mid) + "_l" + to_string(low) + ".jpeg";
-    
-    imwrite("/Users/bambookim/Desktop/CVProject/CVProject/result/" + doubleName, CannyDouble);
-    imwrite("/Users/bambookim/Desktop/CVProject/CVProject/result/" + tripleName, CannyTriple);
+    /*
+    DoG(&CannyImg, 10, 5, width, height);
+    imwrite(filePath + "cameramandog.jpeg", CannyImg);
     */
     
     cout << "Saved Images." << endl;
-    
-    /*
-    String cmd;
-    int num;
-    int count = 0;
-    while (true) {
-        cout << "cmd >> ";
-        cin >> cmd;
-        
-        if (cmd == "q") {
-            break;
-        } else if (cmd == "m" || cmd == "h" || cmd == "l") {
-            cout << "num >> ";
-            cin >> num;
-            
-            if (cmd == "h") {
-                high = num;
-            } else if (cmd == "m") {
-                mid = num;
-            } else if (cmd == "l") {
-                low = num;
-            }
-        }
-        
-        CannyDouble = CannyImg.clone();
-        CannyDouble = cannyEdgeDouble(&CannyDouble, high, low);
-        //imshow("Canny Edge Double", CannyDouble);
-        //waitKey();
-               
-        CannyTriple = CannyImg.clone();
-        CannyTriple = cannyEdgeTriple(&CannyTriple, high, mid, low);
-        //imshow("Canny Edge Triple", CannyTriple);
-        //waitKey();
-        
-        cout << "sigma: " << sigma << endl;
-        cout << " high: " << high << endl;
-        cout << "  mid: " << mid << endl;
-        cout << "  low: " << low << endl;
-        
-        String doubleName = to_string(count) + "s" + to_string(sigma) + "_h" + to_string(high) + "_l" + to_string(low) + ".jpeg";
-        String tripleName = to_string(count) + "s" + to_string(sigma) + "_h" + to_string(high) + "_m" + to_string(mid) + "_l" + to_string(low) + ".jpeg";
-        
-        imwrite("/Users/bambookim/Desktop/CVProject/CVProject/result/" + doubleName, CannyDouble);
-        imwrite("/Users/bambookim/Desktop/CVProject/CVProject/result/" + tripleName, CannyTriple);
-        
-        count++;
-        
-        cout << "Saved Images." << endl;
-    }
-    */
 
     // 동적 할당을 해제한다.
     deleteGlobalArray(height);

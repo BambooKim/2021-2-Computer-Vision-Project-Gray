@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		833C219D27650847003CADCD /* canny.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 833C219827650847003CADCD /* canny.cpp */; };
+		833C219E27650847003CADCD /* derivOfGaussian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 833C219927650847003CADCD /* derivOfGaussian.cpp */; };
+		833C219F27650847003CADCD /* gaussian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 833C219A27650847003CADCD /* gaussian.cpp */; };
 		83BA22932763731C00F4C9BA /* gradient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83BA22912763731C00F4C9BA /* gradient.cpp */; };
 		83C042DD27620C6F00D8277D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C042DC27620C6F00D8277D /* main.cpp */; };
 /* End PBXBuildFile section */
@@ -24,17 +27,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		83BA228F2763565400F4C9BA /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
-		83BA22902763578100F4C9BA /* why.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = why.txt; sourceTree = "<group>"; };
+		833C219727650847003CADCD /* gaussian.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gaussian.hpp; sourceTree = "<group>"; };
+		833C219827650847003CADCD /* canny.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = canny.cpp; sourceTree = "<group>"; };
+		833C219927650847003CADCD /* derivOfGaussian.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = derivOfGaussian.cpp; sourceTree = "<group>"; };
+		833C219A27650847003CADCD /* gaussian.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gaussian.cpp; sourceTree = "<group>"; };
+		833C219B27650847003CADCD /* canny.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = canny.hpp; sourceTree = "<group>"; };
+		833C219C27650847003CADCD /* derivOfGaussian.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = derivOfGaussian.hpp; sourceTree = "<group>"; };
+		833C21A027651293003CADCD /* IMG_5624.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_5624.jpeg; sourceTree = "<group>"; };
 		83BA22912763731C00F4C9BA /* gradient.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gradient.cpp; sourceTree = "<group>"; };
 		83BA22922763731C00F4C9BA /* gradient.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gradient.hpp; sourceTree = "<group>"; };
 		83BA229427637D5700F4C9BA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		83C042D927620C6F00D8277D /* CVProject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CVProject; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C042DC27620C6F00D8277D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		83C042E327621A2E00D8277D /* IMG_5125.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_5125.JPG; sourceTree = "<group>"; };
-		83C042E627630B6500D8277D /* image.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image.jpeg; sourceTree = "<group>"; };
-		83C042E727630BC500D8277D /* IMG_5738.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_5738.jpeg; sourceTree = "<group>"; };
-		83C042E82763278400D8277D /* 42964867.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 42964867.jpeg; sourceTree = "<group>"; };
 		83C042E92763316B00D8277D /* SgQKf.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SgQKf.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,14 +73,15 @@
 		83C042DB27620C6F00D8277D /* CVProject */ = {
 			isa = PBXGroup;
 			children = (
-				83BA22902763578100F4C9BA /* why.txt */,
+				833C21A027651293003CADCD /* IMG_5624.jpeg */,
+				833C219827650847003CADCD /* canny.cpp */,
+				833C219B27650847003CADCD /* canny.hpp */,
+				833C219927650847003CADCD /* derivOfGaussian.cpp */,
+				833C219C27650847003CADCD /* derivOfGaussian.hpp */,
+				833C219A27650847003CADCD /* gaussian.cpp */,
+				833C219727650847003CADCD /* gaussian.hpp */,
 				83C042E92763316B00D8277D /* SgQKf.jpg */,
-				83C042E82763278400D8277D /* 42964867.jpeg */,
-				83C042E727630BC500D8277D /* IMG_5738.jpeg */,
-				83C042E627630B6500D8277D /* image.jpeg */,
-				83C042E327621A2E00D8277D /* IMG_5125.JPG */,
 				83C042DC27620C6F00D8277D /* main.cpp */,
-				83BA228F2763565400F4C9BA /* File.txt */,
 				83BA22912763731C00F4C9BA /* gradient.cpp */,
 				83BA22922763731C00F4C9BA /* gradient.hpp */,
 			);
@@ -141,6 +146,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				83C042DD27620C6F00D8277D /* main.cpp in Sources */,
+				833C219D27650847003CADCD /* canny.cpp in Sources */,
+				833C219F27650847003CADCD /* gaussian.cpp in Sources */,
+				833C219E27650847003CADCD /* derivOfGaussian.cpp in Sources */,
 				83BA22932763731C00F4C9BA /* gradient.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
